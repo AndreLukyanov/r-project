@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Image } from "react-native";
 
 //add components
 import UiInput from "../core/components/ui/input/input";
@@ -11,38 +11,63 @@ export default class Task extends Component {
     super(props);
     this.state = {
       taskVisible: false,
-      items: [],
+      todayItems: [],
+      identifier: 0,
     };
   }
 
-  toggleItem() {
+  toggle() {
     this.setState((state) => ({
       taskVisible: !state.taskVisible,
     }));
   }
 
   addTask(event) {
-    this.state.items.push(event.target.value);
+    this.state.todayItems.push({
+      id: this.state.identifier++,
+      text: event.target.value,
+    });
+    event.target.value = "";
   }
 
   render() {
-    let taskItem;
-
+    let taskBox;
     if (this.state.taskVisible) {
-      taskItem = (
-        <View style={styles.taskItem}>
-          <Text numberOfLines={1}>{this.state.items}</Text>
+      taskBox = (
+        <View style={styles.taskBox}>
+          {this.state.todayItems.map((i) => {
+            return <Text>{i.text}</Text>;
+          })}
         </View>
+      );
+    }
+
+    let countItems;
+    if (this.state.taskVisible) {
+      countItems = (
+        <View style={styles.taskAdd}>
+          <Image
+            style={styles.taskAddIcon}
+            source={require("../core/images/plus-white.svg")}
+          />
+        </View>
+      );
+    } else if (!this.state.taskVisible && this.state.todayItems.length) {
+      countItems = (
+        <Text style={styles.taskCount}>{this.state.todayItems.length}</Text>
       );
     }
 
     return (
       <View style={styles.task}>
         <View style={styles.taskList}>
-          <Text style={styles.taskCaption} onPress={() => this.toggleItem()}>
-            Сегодня
-          </Text>
-          {taskItem}
+          <View style={styles.taskItem}>
+            <Text style={styles.taskCaption} onPress={() => this.toggle()}>
+              Сегодня
+            </Text>
+            {countItems}
+            {taskBox}
+          </View>
           <Text style={styles.taskCaption}>Завтра</Text>
           <Text style={styles.taskCaption}>Предстоящие</Text>
         </View>
@@ -61,6 +86,7 @@ export default class Task extends Component {
 
 const styles = StyleSheet.create({
   task: {
+    paddingVertical: 10,
     paddingHorizontal: 15,
     height: "100%",
     width: "100%",
@@ -72,7 +98,42 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 
+  taskItem: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+
+  taskCount: {
+    display: "flex",
+    paddingHorizontal: 6,
+    minWidth: 18,
+    borderRadius: 20,
+    color: "#ffffff",
+    fontSize: 14,
+    backgroundColor: "#1595d1",
+    justifyContent: "center",
+  },
+
+  taskAdd: {
+    height: 20,
+    width: 20,
+    padding: 5,
+    backgroundColor: "#1595d1",
+    borderRadius: 50,
+  },
+
+  taskAddIcon: {
+    height: "100%",
+    width: "100%",
+  },
+
+  taskBox: {
+    width: "100%",
+    display: "flex",
+  },
+
   taskCaption: {
+    paddingRight: 16,
     color: "#1595d1",
     fontWeight: "bold",
   },
