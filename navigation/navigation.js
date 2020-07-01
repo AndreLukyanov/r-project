@@ -1,6 +1,5 @@
 import * as React from "react";
-import { View } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
@@ -11,31 +10,32 @@ import { createDrawerNavigator } from "react-navigation-drawer";
 import Task from "../screen/tasks";
 import Calendar from "../screen/calendar";
 import Settings from "../screen/settings";
+import Profile from "../screen/profile";
 
 const DrawerNavigator = createDrawerNavigator({
-  Calendar: Calendar,
+  Profile: { screen: Profile },
 });
 
 //setting header
 const _HeaderTitleTask = createStackNavigator({
   Task: {
     screen: Task,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: "Задачи",
       headerStyle: {
         borderBottomColor: "#eee",
       },
       headerTintColor: "#222222",
       headerLeft: (
-        <Icon.Button
-          name="ios-menu"
+        <Ionicons
+          name="md-menu"
           size={25}
-          backgroundColor="#ffffff"
-          color="#000000"
-          onPress={() => {}}
+          style={{ paddingHorizontal: 16 }}
+          navigate={navigation.navigate}
+          onPress={() => navigation.navigate('Root', { screen: 'Profile' })}
         />
       ),
-    },
+    }),
   },
 });
 
@@ -49,12 +49,7 @@ const _HeaderTitleCalendar = createStackNavigator({
       },
       headerTintColor: "#222222",
       headerLeft: (
-        <Icon.Button
-          name="ios-menu"
-          size={25}
-          backgroundColor="#ffffff"
-          color="#000000"
-        />
+        <Ionicons name="md-menu" size={25} style={{ paddingHorizontal: 16 }} />
       ),
     },
   },
@@ -70,12 +65,7 @@ const _HeaderTitleSettings = createStackNavigator({
       },
       headerTintColor: "#222222",
       headerLeft: (
-        <Icon.Button
-          name="ios-menu"
-          size={25}
-          backgroundColor="#ffffff"
-          color="#000000"
-        />
+        <Ionicons name="md-menu" size={25} style={{ paddingHorizontal: 16 }} />
       ),
     },
   },
@@ -87,6 +77,7 @@ const Navigation = createBottomTabNavigator({
     screen: _HeaderTitleTask,
     navigationOptions: {
       title: "Задачи",
+      tabBarIcon: <Ionicons name="md-list" size={25} />,
     },
   },
 
@@ -94,6 +85,7 @@ const Navigation = createBottomTabNavigator({
     screen: _HeaderTitleCalendar,
     navigationOptions: {
       title: "Календарь",
+      tabBarIcon: <Ionicons name="md-calendar" size={25} />,
     },
   },
 
@@ -101,6 +93,7 @@ const Navigation = createBottomTabNavigator({
     screen: _HeaderTitleSettings,
     navigationOptions: {
       title: "Настройки",
+      tabBarIcon: <Ionicons name="md-settings" size={25} />,
     },
   },
 });
